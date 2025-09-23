@@ -127,7 +127,6 @@ function guardarPasswordEnHistorial(password) {
   }
 }
 
-
 function reiniciarHistorial() {
   if (confirm("¿Seguro que deseas reiniciar el historial y el contador?")) {
     localStorage.removeItem("passwordHistory");
@@ -227,20 +226,24 @@ function actualizarMedidor(password) {
   const score = calcularFuerza(password);
 
   const niveles = [
-    { min: 0, color: "red", label: "Muy débil" },
-    { min: 2, color: "orange", label: "Débil" },
-    { min: 4, color: "yellow", label: "Aceptable" },
-    { min: 5, color: "lightgreen", label: "Fuerte" },
-    { min: 6, color: "green", label: "Muy fuerte" }
+    { min: 0, varColor: "--strength-very-weak", label: "Muy débil" },
+    { min: 2, varColor: "--strength-weak", label: "Débil" },
+    { min: 4, varColor: "--strength-acceptable", label: "Aceptable" },
+    { min: 5, varColor: "--strength-strong", label: "Fuerte" },
+    { min: 6, varColor: "--strength-very-strong", label: "Muy fuerte" }
   ];
 
-  const nivel = niveles.reverse().find(n => score >= n.min) || niveles[0];
+  // Escoger nivel
+  let nivel = niveles[0];
+  for (let i = niveles.length - 1; i >= 0; i--) {
+    if (score >= niveles[i].min) { nivel = niveles[i]; break; }
+  }
 
-  bar.style.width = (score / 7) * 100 + "%";
-  bar.style.background = nivel.color;
+  const widthPercent = Math.min(100, Math.round((score / 7) * 100));
+  bar.style.width = widthPercent + "%";
+  bar.style.background = getComputedStyle(document.documentElement).getPropertyValue(nivel.varColor).trim();
   text.textContent = "Seguridad: " + nivel.label;
 }
-
 
 // ===============================
 // Interfaz
@@ -274,7 +277,7 @@ function copiarPasswordAlPortapapeles() {
 }
 
 // ===============================
-// Flujo principal
+// Manejo formulario
 // ===============================
 function manejarGeneracion(event) {
   event.preventDefault();
@@ -300,6 +303,48 @@ function manejarGeneracion(event) {
 }
 
 // ===============================
+// Tema (claro / oscuro)
+// ===============================
+const THEME_KEY = "preferredTheme"; // "dark" o "light"
+
+function setTheme(isLight) {
+  if (isLight) {
+    document.body.classList.add("light-theme");
+    document.getElementById("themeToggle").checked = true;
+    document.querySelector(".theme-label").textContent = "Claro";
+    localStorage.setItem(THEME_KEY, "light");
+  } else {
+    document.body.classList.remove("light-theme");
+    document.getElementById("themeToggle").checked = false;
+    document.querySelector(".theme-label").textContent = "Oscuro";
+    localStorage.setItem(THEME_KEY, "dark");
+  }
+}
+
+function initThemeToggle() {
+  const toggle = document.getElementById("themeToggle");
+
+  // Preferencia guardada -> aplicar
+  const saved = localStorage.getItem(THEME_KEY);
+  if (saved === "light") {
+    setTheme(true);
+  } else if (saved === "dark") {
+    setTheme(false);
+  } else {
+    // Sin preferencia: usar modo oscuro por defecto pero permitir preferencia de sistema como alternativa
+    const prefersLight = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches;
+    setTheme(prefersLight); // si el sistema sugiere claro, respetarlo; si no, se queda oscuro
+  }
+
+  toggle.addEventListener("change", (e) => {
+    setTheme(e.target.checked);
+    // actualizar medidor para forzar reaplicación de colores (si corresponde)
+    const current = document.getElementById("passwordOutput").value;
+    actualizarMedidor(current);
+  });
+}
+
+// ===============================
 // Inicialización
 // ===============================
 function inicializarEventos() {
@@ -309,7 +354,10 @@ function inicializarEventos() {
   document.getElementById("exportBtn").addEventListener("click", exportarHistorial);
   document.getElementById("resetBtn").addEventListener("click", reiniciarHistorial);
   document.getElementById("passwordOutput").addEventListener("input", (e) => actualizarMedidor(e.target.value));
-  window.onload = cargarHistorial;
+  window.onload = () => {
+    cargarHistorial();
+    initThemeToggle();
+  };
 }
 
 inicializarEventos();
