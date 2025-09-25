@@ -173,7 +173,7 @@ function esDominadaPorUnGrupo(password) {
     symbols: (password.match(/[!@#$%^&*()_+\-=\[\]{}|;:,.<>?]/g) || []).length
   };
   let maxGroup = Math.max(...Object.values(grupos));
-  return maxGroup / password.length > 0.8;
+  return maxGroup / (password.length || 1) > 0.8;
 }
 
 // ===============================
@@ -215,6 +215,67 @@ function calcularFuerza(password) {
   }
 
   return score;
+}
+
+// ===============================
+// NUEVO: Sugerencias de mejora (al menos 20 líneas, fácil de explicar)
+// ===============================
+function generarSugerencias(password) {
+  const container = document.getElementById("suggestionsContainer");
+  const lista = document.getElementById("suggestionsList");
+  lista.innerHTML = "";
+
+  // Si no hay contraseña, ocultamos el bloque y salimos
+  if (!password) {
+    container.style.display = "none";
+    return;
+  }
+
+  const sugerencias = [];
+
+  // Reglas simples y explicables
+  if (password.length < 12) {
+    sugerencias.push("🔹 Usa al menos 12 caracteres para mayor seguridad.");
+  } else if (password.length >= 20) {
+    sugerencias.push("🔹 Buena longitud: 20+ caracteres es muy segura.");
+  }
+
+  if (!/[A-Z]/.test(password)) {
+    sugerencias.push("🔹 Agrega letras mayúsculas (A-Z).");
+  }
+  if (!/[a-z]/.test(password)) {
+    sugerencias.push("🔹 Agrega letras minúsculas (a-z).");
+  }
+  if (!/[0-9]/.test(password)) {
+    sugerencias.push("🔹 Incluye números (0-9).");
+  }
+  if (!/[!@#$%^&*()_+\-=\[\]{}|;:,.<>?]/.test(password)) {
+    sugerencias.push("🔹 Incluye símbolos especiales para aumentar entropía.");
+  }
+
+  if (contieneSecuenciasPredecibles(password)) {
+    sugerencias.push("⚠️ Evita secuencias comunes como '123', 'abc' o 'qwerty'.");
+  }
+
+  if (esDominadaPorUnGrupo(password)) {
+    sugerencias.push("⚠️ Tu contraseña está dominada por un tipo de carácter; mezcla más tipos.");
+  }
+
+  // Consejo adicional simple y práctico
+  if (sugerencias.length === 0) {
+    sugerencias.push("✅ Tu contraseña parece fuerte. Considera usar un gestor de contraseñas o una passphrase.");
+  } else {
+    sugerencias.push("💡 Tip: una passphrase (frase larga y memorable) es fácil de recordar y segura.");
+  }
+
+  // Renderizar
+  sugerencias.forEach(s => {
+    const li = document.createElement("li");
+    li.textContent = s;
+    lista.appendChild(li);
+  });
+
+  container.style.display = "block";
 }
 
 // ===============================
@@ -268,11 +329,33 @@ function mostrarError(message) {
   };
 }
 
-function copiarPasswordAlPortapapeles() {
+async function copiarPasswordAlPortapapeles() {
   const password = document.getElementById("passwordOutput").value;
-  if (password) {
-    navigator.clipboard.writeText(password);
-    alert("✅ Contraseña copiada al portapapeles");
+  if (!password) {
+    mostrarError("No hay contraseña para copiar.");
+    return;
+  }
+  try {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      await navigator.clipboard.writeText(password);
+      alert("✅ Contraseña copiada al portapapeles");
+    } else {
+      // Fallback para algunos navegadores o contexto file://
+      const textarea = document.createElement("textarea");
+      textarea.value = password;
+      document.body.appendChild(textarea);
+      textarea.select();
+      try {
+        document.execCommand("copy");
+        alert("✅ Contraseña copiada (método alternativo).");
+      } catch (err) {
+        prompt("Copia manualmente esta contraseña:", password);
+      }
+      textarea.remove();
+    }
+  } catch (err) {
+    console.error("Error copiando al portapapeles:", err);
+    prompt("Copia manualmente esta contraseña:", password);
   }
 }
 
@@ -300,6 +383,7 @@ function manejarGeneracion(event) {
 
   document.getElementById("passwordOutput").value = ultima;
   actualizarMedidor(ultima);
+  generarSugerencias(ultima); // <-- llamada a la nueva funcionalidad
 }
 
 // ===============================
@@ -353,10 +437,18 @@ function inicializarEventos() {
   document.getElementById("toggleHistoryBtn").addEventListener("click", toggleHistorial);
   document.getElementById("exportBtn").addEventListener("click", exportarHistorial);
   document.getElementById("resetBtn").addEventListener("click", reiniciarHistorial);
-  document.getElementById("passwordOutput").addEventListener("input", (e) => actualizarMedidor(e.target.value));
+  document.getElementById("passwordOutput").addEventListener("input", (e) => {
+    actualizarMedidor(e.target.value);
+    generarSugerencias(e.target.value);
+  });
+
   window.onload = () => {
     cargarHistorial();
     initThemeToggle();
+    // Si ya hay una contraseña (ej. al recargar), actualiza medidor y sugerencias
+    const current = document.getElementById("passwordOutput").value;
+    actualizarMedidor(current);
+    generarSugerencias(current);
   };
 }
 

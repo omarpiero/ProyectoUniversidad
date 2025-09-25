@@ -238,3 +238,18 @@ form label {
   font-weight: bold;
   color: var(--muted);
 }
+
+/* NUEVO: sugerencias */
+#suggestionsContainer {
+  margin-top: 10px;
+  padding: 10px;
+  background: var(--card-bg);
+  border-radius: 8px;
+  text-align: left;
+}
+
+#suggestionsList li {
+  font-size: 0.9em;
+  margin: 4px 0;
+  color: var(--muted);
+}
