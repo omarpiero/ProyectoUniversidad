@@ -404,6 +404,39 @@ function setTheme(isLight) {
     localStorage.setItem(THEME_KEY, "dark");
   }
 }
+// ===============================
+// NUEVO: Generar código QR de la contraseña (más visual)
+// ===============================
+
+function generarQRPassword(password) {
+  const container = document.getElementById("qrContainer");
+  const canvas = document.getElementById("qrCanvas");
+
+  if (!password) {
+    mostrarError("No hay contraseña para generar QR.");
+    return;
+  }
+
+  container.style.display = "block";
+
+  // Usamos API nativa de canvas con librería simple generada a mano
+  const ctx = canvas.getContext("2d");
+  const size = 200;
+  canvas.width = size;
+  canvas.height = size;
+
+  // Limpia el canvas
+  ctx.fillStyle = "#fff";
+  ctx.fillRect(0, 0, size, size);
+
+  // Usamos API gratuita (qrserver) para no depender de librerías externas
+  const img = new Image();
+  img.crossOrigin = "anonymous";
+  img.onload = function () {
+    ctx.drawImage(img, 0, 0, size, size);
+  };
+  img.src = `https://api.qrserver.com/v1/create-qr-code/?size=${size}x${size}&data=${encodeURIComponent(password)}`;
+}
 
 function initThemeToggle() {
   const toggle = document.getElementById("themeToggle");
@@ -428,6 +461,7 @@ function initThemeToggle() {
   });
 }
 
+
 // ===============================
 // Inicialización
 // ===============================
@@ -441,7 +475,11 @@ function inicializarEventos() {
     actualizarMedidor(e.target.value);
     generarSugerencias(e.target.value);
   });
-
+  // Evento del nuevo botón
+document.getElementById("qrBtn").addEventListener("click", () => {
+  const password = document.getElementById("passwordOutput").value;
+  generarQRPassword(password);
+});
   window.onload = () => {
     cargarHistorial();
     initThemeToggle();

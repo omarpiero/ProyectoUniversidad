@@ -167,6 +167,19 @@ form label {
   color: var(--text);
   border: 1px solid rgba(255,255,255,0.06);
 }
+/* NUEVO: contenedor QR */
+#qrContainer {
+  margin-top: 10px;
+  padding: 10px;
+  background: var(--card-bg);
+  border-radius: 10px;
+  text-align: center;
+}
+#qrCanvas {
+  margin-top: 8px;
+  border: 2px solid var(--primary);
+  border-radius: 8px;
+}
 
 /* Historial */
 #historyContainer {
