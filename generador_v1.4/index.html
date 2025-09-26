@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Generador de Contraseñas Seguras</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- SWITCH TEMA (arriba a la derecha) -->
+  <div class="theme-toggle-wrapper">
+    <label class="theme-switch" for="themeToggle">
+      <input type="checkbox" id="themeToggle" />
+      <span class="slider"></span>
+    </label>
+    <span class="theme-label">Claro</span>
+  </div>
+
+  <!-- 🔹 CONTENEDOR 1: Generador -->
+  <div class="container">
+    <h1>Generador de Contraseñas Seguras</h1>
+
+    <!-- Formulario -->
+    <form id="passwordForm">
+      <label for="length">Longitud de la contraseña:</label>
+      <input type="number" id="length" name="length" min="8" max="32" required>
+      <small>Debe estar entre 8 y 32 caracteres.</small>
+
+      <label for="quantity">Cantidad de contraseñas:</label>
+      <input type="number" id="quantity" name="quantity" min="1" max="100" value="1">
+      <small>Máximo 100 contraseñas por lote.</small>
+
+      <div class="options">
+        <label><input type="checkbox" id="uppercase" checked> Incluir Mayúsculas</label>
+        <label><input type="checkbox" id="lowercase" checked> Incluir Minúsculas</label>
+        <br>
+        <label><input type="checkbox" id="numbers" checked> Incluir Números</label>
+        <label><input type="checkbox" id="symbols"> Incluir Símbolos</label>
+      </div>
+
+      <button type="submit">Generar Contraseña(s)</button>
+    </form>
+
+    <!-- Resultado -->
+    <div class="result">
+      <h2>Contraseña Generada:</h2>
+      <input type="text" id="passwordOutput" readonly>
+      <button id="copyBtn">📋 Copiar</button>
+
+      <!-- Medidor de fuerza -->
+      <div id="strengthContainer">
+        <div id="strengthBar"></div>
+      </div>
+      <p id="strengthText">Seguridad: -</p>
+
+      <!-- NUEVO: Sugerencias -->
+      <div id="suggestionsContainer" style="display:none;">
+        <h3>Sugerencias de Mejora:</h3>
+        <ul id="suggestionsList"></ul>
+      </div>
+    </div>
+  </div>
+  <!-- NUEVO: Botón para generar código QR -->
+   <button id="qrBtn">📱 Generar QR</button>
+      <div id="qrContainer" style="margin-top:15px; display:none;">
+        <h3>🔍 Código QR:</h3>
+        <canvas id="qrCanvas"></canvas>
+      </div>
+
+  <!-- 🔹 CONTENEDOR 2: Historial -->
+  <div class="container">
+    <h2>📜 Historial de Contraseñas</h2>
+    <button id="toggleHistoryBtn">📜 Ver Historial</button>
+    <p>Total de contraseñas generadas: <span id="passwordCount">0</span></p>
+
+    <div id="historyContainer" style="display: none;">
+      <ul id="historyList"></ul>
+      <button id="exportBtn">⬇️ Exportar a TXT</button>
+      <button id="resetBtn">♻️ Reiniciar Historial</button>
+    </div>
+  </div>
+
+  <!-- Modal de errores -->
+  <div id="errorModal" class="modal">
+    <div class="modal-content">
+      <span id="closeModal">&times;</span>
+      <p id="errorMessage"></p>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
