@@ -252,6 +252,107 @@ form label {
   color: var(--muted);
 }
 
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f4f6f9;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.container {
+  background: #ffffff;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  text-align: center;
+  width: 400px;
+}
+
+h1 {
+  font-size: 20px;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+button {
+  background: #007BFF;
+  color: white;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  margin: 10px 0;
+}
+
+button:hover {
+  background: #0056b3;
+}
+
+#resultado {
+  font-weight: bold;
+  margin: 15px 0;
+  font-size: 18px;
+  color: #222;
+}
+
+#fuerza-container, 
+#entropia-container {
+  margin: 20px 0;
+  text-align: left;
+}
+
+progress {
+  width: 100%;
+  height: 20px;
+  margin: 5px 0;
+}
+
+#nivel-fuerza {
+  font-weight: bold;
+  display: block;
+  margin-top: 5px;
+}
+
+#entropia-container h3 {
+  margin: 0;
+  font-size: 16px;
+  color: #444;
+}
+
+#valor-entropia {
+  font-size: 14px;
+  margin-top: 5px;
+  color: #555;
+}
+
+#sugerencias-container {
+  text-align: left;
+  margin-top: 20px;
+  background: #f9f9f9;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+}
+
+#sugerencias-container h3 {
+  margin: 0 0 10px 0;
+  font-size: 16px;
+  color: #444;
+}
+
+#sugerencias {
+  list-style: none;
+  padding-left: 15px;
+  margin: 0;
+}
+
+#sugerencias li {
+  font-size: 14px;
+  margin-bottom: 5px;
+}
+
 /* NUEVO: sugerencias */
 #suggestionsContainer {
   margin-top: 10px;

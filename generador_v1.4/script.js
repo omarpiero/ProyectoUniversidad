@@ -217,6 +217,33 @@ function calcularFuerza(password) {
   return score;
 }
 
+// =========================
+function calcularEntropia(password) {
+  if (!password) {
+      document.getElementById("valor-entropia").textContent = "—";
+      return;
+  }
+
+  let pool = 0;
+  if (/[a-z]/.test(password)) pool += 26;
+  if (/[A-Z]/.test(password)) pool += 26;
+  if (/[0-9]/.test(password)) pool += 10;
+  if (/[^A-Za-z0-9]/.test(password)) pool += 32; // símbolos aproximados
+
+  // Fórmula Shannon simplificada: log2(pool^length)
+  const entropia = Math.round(password.length * Math.log2(pool));
+
+  let interpretacion = "";
+  if (entropia < 28) interpretacion = "Muy débil";
+  else if (entropia < 36) interpretacion = "Débil";
+  else if (entropia < 60) interpretacion = "Aceptable";
+  else if (entropia < 128) interpretacion = "Fuerte";
+  else interpretacion = "Muy fuerte";
+
+  document.getElementById("valor-entropia").textContent =
+      `${entropia} bits → ${interpretacion}`;
+}
+
 // ===============================
 // NUEVO: Sugerencias de mejora (al menos 20 líneas, fácil de explicar)
 // ===============================
