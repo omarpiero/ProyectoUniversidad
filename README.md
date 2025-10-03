@@ -85,4 +85,5 @@ Por último en tu navegador escribe: http://localhost:8000
 - `GET /perfiles`: Obtiene la lista de todos los perfiles.
 - `GET /perfiles/{id}`: Obtiene un perfil específico.
 - `PUT /perfiles/{id}`: Actualiza un perfil (historial y/o preferencias).
+- `OPTIONS /perfiles/{id}`: Carga las preferencias del perfil.
 - `DELETE /perfiles/{id}`: Elimina un perfil.
