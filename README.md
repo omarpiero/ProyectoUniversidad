@@ -6,8 +6,8 @@ Este proyecto integra un backend en Python con Flask a una aplicación frontend 
 
 - Omar Terbullino
 - Jean Quispe
-- 
--
+- Jhon Fernandez
+- Anthony Perez
 -
 
 ## Funcionalidad Agregada y Mejorada
