@@ -85,5 +85,13 @@ Por último en tu navegador escribe: http://localhost:8000
 - `GET /perfiles`: Obtiene la lista de todos los perfiles.
 - `GET /perfiles/{id}`: Obtiene un perfil específico.
 - `PUT /perfiles/{id}`: Actualiza un perfil (historial y/o preferencias).
-- `OPTIONS /perfiles/{id}`: Carga las preferencias del perfil.
+- `OPTIONS /perfiles/{id}`: Se ejecuta automáticamente al leer un usuario para cargar las preferencias del perfil.
 - `DELETE /perfiles/{id}`: Elimina un perfil.
+
+## Lista de Comandos para probar los Endpoints
+- `http://127.0.0.1:5000/perfiles`: Puedes ver los usuarios existentes abriendo el enlace en tu navegador.
+- `curl.exe -X POST -H "Content-Type: application/json" -d "{\"nombre_perfil\": \"Usuario de Prueba\", \"email\": \"prueba@test.com\"}" http://127.0.0.1:5000/perfiles`: Crea un nuevo perfil de prueba.
+- `curl -X DELETE http://127.0.0.1:5000/perfiles/{Ingrese el ID del usuario que quieras borrar}`: Eliminar un usuario por ID.
+- `curl http://127.0.0.1:5000/perfiles/{Ingrese el ID del usuario}`: Leer los datos de un usuario por ID.
+- `curl.exe -X PUT -H "Content-Type: application/json" -d "{\"email\": \"email.actualizado@curlexe.com\"}" http://127.0.0.1:5000/perfiles/{Ingrese el ID del usuario}`: Actualizar los datos de un usuario por ID.
+- Nota: En el comando PUT se está actualizando el email a manera de ejemplo. 
