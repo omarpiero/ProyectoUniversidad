@@ -8,7 +8,7 @@ Este proyecto integra un backend en Python con Flask a una aplicación frontend 
 - Jean Quispe
 - Jhon Fernandez
 - Anthony Perez
--
+- Pool Caceda
 
 ## Funcionalidad Agregada y Mejorada
 
