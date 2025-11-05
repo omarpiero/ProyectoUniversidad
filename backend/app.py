@@ -1,106 +1,165 @@
 import uuid
-import json
+import os
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-import os
+from flask_sqlalchemy import SQLAlchemy
 
-# Initialization of the Flask application
+# --- 1. Configuración de la App y Base de Datos ---
+
+# Inicialización de la aplicación Flask
 app = Flask(__name__)
-# Enable CORS for smooth communication with the frontend
+# Habilitar CORS para comunicación con el frontend
 CORS(app)
 
-# Path to the file that will function as our database
-DB_FILE = 'perfiles.json'
+# Configura la ubicación del archivo de la base de datos (SQLite)
+basedir = os.path.abspath(os.path.dirname(__file__))
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, 'perfiles.db')
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-def read_db():
-    """Safely reads the profile database from the JSON file."""
-    if not os.path.exists(DB_FILE):
-        return {}
-    try:
-        with open(DB_FILE, 'r', encoding='utf-8') as f:
-            content = f.read()
-            if not content:
-                return {}
-            return json.loads(content)
-    except (IOError, json.JSONDecodeError):
-        return {}
+# Inicializa la extensión SQLAlchemy
+db = SQLAlchemy(app)
 
-def write_db(data):
-    """Writes the profile data to the JSON file."""
-    with open(DB_FILE, 'w', encoding='utf-8') as f:
-        json.dump(data, f, indent=4, ensure_ascii=False)
+# --- 2. Definición del Modelo de Datos ---
 
-# --- RESTful API ENDPOINTS ---
+class Perfil(db.Model):
+    """
+    Define la tabla 'perfil' en la base de datos.
+    Esto reemplaza la estructura del JSON.S
+    """
+    __tablename__ = 'perfil'
+    
+    # Columnas de la tabla
+    id = db.Column(db.String(36), primary_key=True)
+    nombre_perfil = db.Column(db.String(100), nullable=False)
+    email = db.Column(db.String(120), unique=True, nullable=False)
+    
+    # Usamos db.JSON para almacenar diccionarios y listas,
+    # perfecto para las preferencias y el historial.
+    preferencias = db.Column(db.JSON, nullable=False)
+    historial = db.Column(db.JSON, nullable=False)
+
+    def to_dict(self):
+        """
+        Función helper para convertir el objeto Perfil (de Python)
+        en un diccionario (para poder enviarlo como JSON).
+        """
+        return {
+            "id": self.id,
+            "nombre_perfil": self.nombre_perfil,
+            "email": self.email,
+            "preferencias": self.preferencias,
+            "historial": self.historial
+        }
+
+# --- 3. Endpoints de la API RESTful (Refactorizados) ---
 
 @app.route('/perfiles', methods=['POST'])
 def create_profile():
-    """Creates a new profile with default values."""
+    """Crea un nuevo perfil con valores por defecto."""
     data = request.json
     if not data or 'nombre_perfil' not in data or 'email' not in data:
-        return jsonify({"error": "Fields 'nombre_perfil' and 'email' are missing"}), 400
+        return jsonify({"error": "Campos 'nombre_perfil' y 'email' son requeridos"}), 400
 
-    db = read_db()
-    
-    new_profile = {
-        "id": str(uuid.uuid4()),
-        "nombre_perfil": data['nombre_perfil'],
-        "email": data['email'],
-        "preferencias": {
+    # Comprobar si el email ya existe
+    if Perfil.query.filter_by(email=data['email']).first():
+        return jsonify({"error": "El email ya está en uso"}), 409 # 409 Conflict
+
+    # Crea una instancia del objeto Perfil
+    new_profile = Perfil(
+        id=str(uuid.uuid4()),
+        nombre_perfil=data['nombre_perfil'],
+        email=data['email'],
+        # Valores por defecto (igual que en tu app original)
+        preferencias={
             "length": 16,
             "uppercase": True,
             "lowercase": True,
             "numbers": True,
             "symbols": True
         },
-        "historial": []
-    }
+        historial=[]
+    )
     
-    db[new_profile['id']] = new_profile
-    write_db(db)
-    
-    return jsonify(new_profile), 201
+    try:
+        # Añade el nuevo objeto a la sesión y guarda en la BD
+        db.session.add(new_profile)
+        db.session.commit()
+        # Devuelve el nuevo perfil como diccionario
+        return jsonify(new_profile.to_dict()), 201
+    except Exception as e:
+        db.session.rollback() # Revierte la transacción en caso de error
+        return jsonify({"error": f"Error interno del servidor: {str(e)}"}), 500
 
 @app.route('/perfiles', methods=['GET'])
 def get_all_profiles():
-    """Gets a list of all profiles."""
-    db = read_db()
-    return jsonify(list(db.values())), 200
+    """Obtiene una lista de todos los perfiles."""
+    # Consulta todos los perfiles en la tabla
+    perfiles_objetos = Perfil.query.all()
+    # Convierte cada objeto a un diccionario
+    perfiles_dict = [p.to_dict() for p in perfiles_objetos]
+    return jsonify(perfiles_dict), 200
 
 @app.route('/perfiles/<profile_id>', methods=['GET'])
 def get_profile(profile_id):
-    """Gets a specific profile by its ID."""
-    db = read_db()
-    profile = db.get(profile_id)
+    """Obtiene un perfil específico por su ID."""
+    # Busca el perfil por su clave primaria (es más rápido que 'filter_by')
+    profile = Perfil.query.get(profile_id)
     if profile:
-        return jsonify(profile), 200
-    return jsonify({"error": "Profile not found"}), 404
+        return jsonify(profile.to_dict()), 200
+    return jsonify({"error": "Perfil no encontrado"}), 404
 
 @app.route('/perfiles/<profile_id>', methods=['PUT'])
 def update_profile(profile_id):
-    """Updates an existing profile (history or preferences)."""
-    db = read_db()
-    if profile_id not in db:
-        return jsonify({"error": "Profile not found"}), 404
+    """Actualiza un perfil existente (historial, preferencias, etc.)."""
+    # Busca el perfil a actualizar
+    profile = Perfil.query.get(profile_id)
+    if not profile:
+        return jsonify({"error": "Perfil no encontrado"}), 404
     
     update_data = request.json
     if not update_data:
-        return jsonify({"error": "No data provided for update"}), 400
+        return jsonify({"error": "No hay datos para actualizar"}), 400
         
-    db[profile_id].update(update_data)
-    write_db(db)
+    # Actualiza los campos del objeto si vienen en el JSON
+    if 'historial' in update_data:
+        profile.historial = update_data['historial']
+    if 'preferencias' in update_data:
+        profile.preferencias = update_data['preferencias']
+    if 'email' in update_data:
+        profile.email = update_data['email']
+    if 'nombre_perfil' in update_data:
+        profile.nombre_perfil = update_data['nombre_perfil']
     
-    return jsonify(db[profile_id]), 200
+    try:
+        # Guarda (confirma) los cambios en la base de datos
+        db.session.commit()
+        return jsonify(profile.to_dict()), 200
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": f"Error al actualizar: {str(e)}"}), 500
 
 @app.route('/perfiles/<profile_id>', methods=['DELETE'])
 def delete_profile(profile_id):
-    """Deletes a profile by its ID."""
-    db = read_db()
-    if profile_id in db:
-        deleted_profile = db.pop(profile_id)
-        write_db(db)
-        return jsonify({"message": "Profile deleted successfully", "perfil": deleted_profile}), 200
-    return jsonify({"error": "Profile not found"}), 404
+    """Elimina un perfil por su ID."""
+    # Busca el perfil a eliminar
+    profile = Perfil.query.get(profile_id)
+    if profile:
+        try:
+            # Captura los datos para devolverlos (opcional pero bueno)
+            deleted_profile_data = profile.to_dict()
+            # Elimina el objeto de la sesión y guarda los cambios
+            db.session.delete(profile)
+            db.session.commit()
+            return jsonify({"message": "Perfil eliminado exitosamente", "perfil": deleted_profile_data}), 200
+        except Exception as e:
+            db.session.rollback()
+            return jsonify({"error": f"Error al eliminar: {str(e)}"}), 500
+    return jsonify({"error": "Perfil no encontrado"}), 404
+
+# --- 4. Ejecución de la Aplicación ---
 
 if __name__ == '__main__':
+    # (Opcional) Crea la base de datos y tablas si no existen
+    # al iniciar la app.
+        
     app.run(debug=True, port=5000)
-
