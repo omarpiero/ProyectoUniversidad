@@ -28,6 +28,17 @@ Este proyecto integra un backend en Python con Flask a una aplicación frontend 
 La estructura de carpetas ahora refleja la nueva persistencia de datos:
 
 ```
+¡Por supuesto\! Tienes toda la razón, la estructura de carpetas que me enviaste ya no refleja la refactorización que acabamos de hacer en el frontend.
+
+Aquí tienes la sección `## Estructura de Carpetas` actualizada para tu `README.md`.
+
+-----
+
+## Estructura de Carpetas
+
+La estructura del proyecto ha sido refactorizada para una mejor separación de responsabilidades, especialmente en el frontend.
+
+```
 .
 ├── backend/
 │   ├── app.py              # Servidor Flask con la API RESTful y lógica de SQLAlchemy
@@ -38,7 +49,11 @@ La estructura de carpetas ahora refleja la nueva persistencia de datos:
 │   ├── index.html          # Estructura de la aplicación
 │   ├── styles.css          # Hoja de estilos externa
 │   ├── api.js              # Módulo para la comunicación con el backend
-│   └── main.js             # Lógica principal de la interfaz y generación
+│   ├── dom.js              # Módulo de selectores del DOM
+│   ├── state.js            # Módulo de estado de la aplicación
+│   ├── ui.js               # Módulo para manipulación de la UI (pintado)
+│   ├── handlers.js         # Módulo con la lógica de eventos (manejadores)
+│   └── main.js             # Punto de entrada principal (arranque y delegación de eventos)
 │
 └── README.md               # Este archivo
 ```
