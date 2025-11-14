@@ -1,0 +1,38 @@
+// frontend/dom.js
+
+// Selecciona todos los elementos del DOM una sola vez
+// y los exporta para que otros módulos los usen.
+export default {
+    profileSelector: document.getElementById('profileSelector'),
+    createProfileBtn: document.getElementById('createProfileBtn'),
+    deleteProfileBtn: document.getElementById('deleteProfileBtn'),
+    newProfileNameInput: document.getElementById('newProfileName'),
+    newProfileEmailInput: document.getElementById('newProfileEmail'),
+    passwordForm: document.getElementById('passwordForm'),
+    passwordOutput: document.getElementById('passwordOutput'),
+    copyBtn: document.getElementById('copyBtn'),
+    historyList: document.getElementById('historyList'),
+    passwordCount: document.getElementById('passwordCount'),
+    generatorContainer: document.getElementById('generator-container'),
+    historyContainer: document.getElementById('history-container'),
+    profileInfoDiv: document.getElementById('profile-info'),
+    loadingIndicator: document.getElementById('loading-indicator'),
+    themeToggle: document.getElementById('themeToggle'),
+    feedbackModal: document.getElementById('feedbackModal'),
+    feedbackMessage: document.getElementById('feedbackMessage'),
+    closeModalBtn: document.getElementById('closeModal'),
+    strengthBar: document.getElementById('strengthBar'),
+    strengthText: document.getElementById('strengthText'),
+    suggestionsContainer: document.getElementById('suggestionsContainer'),
+    suggestionsList: document.getElementById('suggestionsList'),
+    qrBtn: document.getElementById('qrBtn'),
+    qrContainer: document.getElementById('qrContainer'),
+    qrCanvas: document.getElementById('qrCanvas'),
+    exportBtn: document.getElementById('exportBtn'),
+    clearHistoryBtn: document.getElementById('clearHistoryBtn'),
+    lengthInput: document.getElementById('length'),
+    uppercaseCheck: document.getElementById('uppercase'),
+    lowercaseCheck: document.getElementById('lowercase'),
+    numbersCheck: document.getElementById('numbers'),
+    symbolsCheck: document.getElementById('symbols'),
+};
