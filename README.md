@@ -39,9 +39,8 @@ La estructura de carpetas ahora refleja la nueva persistencia de datos:
 │   ├── styles.css          # Hoja de estilos externa
 │   ├── api.js              # Módulo para la comunicación con el backend
 │   ├── dom.js              # Módulo de selectores del DOM
-│   ├── state.js            # Módulo de estado de la aplicación
-│   ├── ui.js               # Módulo para manipulación de la UI (pintado)
-│   ├── handlers.js         # Módulo con la lógica de eventos (manejadores)
+│   ├── view.js               # Módulo para manipulación de la UI (pintado)
+│   ├── utils.js         # Módulo con la lógica de eventos (manejadores)
 │   └── main.js             # Punto de entrada principal (arranque y delegación de eventos)
 │
 └── README.md               # Este archivo
