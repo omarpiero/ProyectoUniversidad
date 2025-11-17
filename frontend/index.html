@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Generador de Contraseñas Seguras</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  
+  <div class="theme-toggle-wrapper">
+    <label class="theme-switch" for="themeToggle">
+      <input type="checkbox" id="themeToggle" />
+      <span class="slider"></span>
+    </label>
+    <span class="theme-label">Oscuro</span>
+  </div>
+
+  <div class="main-grid">
+    <!-- 🔹 CONTAINER: PROFILE MANAGEMENT -->
+    <div class="container container-profile">
+      <h2>👤 Gestión de Perfil</h2>
+      <div id="profile-loader">
+        <label for="profileSelector">Seleccionar Perfil:</label>
+        <select id="profileSelector"><option>Cargando...</option></select>
+        <div id="loading-indicator" style="display: none;">Cargando...</div>
+      </div>
+      <div id="profile-info" class="profile-info" style="display: none;"></div>
+
+      <hr>
+
+      <div id="profile-creator">
+        <h3>Crear Nuevo Perfil</h3>
+        <input type="text" id="newProfileName" placeholder="Nombre del Perfil">
+        <input type="email" id="newProfileEmail" placeholder="Email del Perfil">
+        <button id="createProfileBtn">💾 Crear y Cargar Perfil</button>
+      </div>
+      <button id="deleteProfileBtn" class="danger" style="display: none;">🗑️ Eliminar Perfil Actual</button>
+    </div>
+
+    <!-- 🔹 CONTAINER 1: Generator -->
+    <div class="container disabled-panel" id="generator-container">
+      <h1>Generador de Contraseñas</h1>
+      <form id="passwordForm">
+        <label for="length">Longitud:</label>
+        <input type="number" id="length" name="length" min="8" max="32" value="16" required>
+        <label>Opciones:</label>
+        <div class="options">
+          <label><input type="checkbox" id="uppercase" checked> Mayúsculas</label>
+          <label><input type="checkbox" id="lowercase" checked> Minúsculas</label>
+          <label><input type="checkbox" id="numbers" checked> Números</label>
+          <label><input type="checkbox" id="symbols" checked> Símbolos</label>
+        </div>
+        <button type="submit" id="generateBtn">Generar Contraseña</button>
+      </form>
+      <div class="result">
+        <input type="text" id="passwordOutput" readonly placeholder="Genera una contraseña...">
+        <button id="copyBtn" title="Copiar">📋</button>
+      </div>
+      <div id="strengthContainer"><div id="strengthBar"></div></div>
+      <p id="strengthText">Seguridad: -</p>
+      <div id="suggestionsContainer" style="display:none;">
+        <h3>Sugerencias:</h3>
+        <ul id="suggestionsList"></ul>
+      </div>
+       <button id="qrBtn" class="secondary">📱 Generar QR</button>
+       <div id="qrContainer" style="display:none;"><canvas id="qrCanvas"></canvas></div>
+    </div>
+
+    <!-- 🔹 CONTAINER 2: History -->
+    <div class="container disabled-panel" id="history-container">
+      <h2>📜 Historial del Perfil</h2>
+      <p>Total guardadas: <span id="passwordCount">0</span></p>
+      <div id="historyListContainer"><ul id="historyList"></ul></div>
+      <div class="history-actions">
+          <button id="exportBtn" class="secondary">⬇️ Exportar a TXT</button>
+          <button id="clearHistoryBtn" class="danger">♻️ Limpiar Historial</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal for feedback -->
+  <div id="feedbackModal" class="modal">
+    <div class="modal-content">
+      <span id="closeModal">&times;</span>
+      <p id="feedbackMessage"></p>
+    </div>
+  </div>
+  <script type="module" src="main.js"></script>
+</body>
+</html>
+
