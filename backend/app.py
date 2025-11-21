@@ -24,7 +24,6 @@ db = SQLAlchemy(app)
 class Perfil(db.Model):
     """
     Define la tabla 'perfil' en la base de datos.
-    Esto reemplaza la estructura del JSON.S
     """
     __tablename__ = 'perfil'
     
@@ -32,6 +31,7 @@ class Perfil(db.Model):
     id = db.Column(db.String(36), primary_key=True)
     nombre_perfil = db.Column(db.String(100), nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
+    edad = db.Column(db.Integer, nullable=True)  # Campo de edad agregado
     
     # Usamos db.JSON para almacenar diccionarios y listas,
     # perfecto para las preferencias y el historial.
@@ -47,11 +47,12 @@ class Perfil(db.Model):
             "id": self.id,
             "nombre_perfil": self.nombre_perfil,
             "email": self.email,
+            "edad": self.edad,  # Incluir edad en el dict
             "preferencias": self.preferencias,
             "historial": self.historial
         }
 
-# --- 3. Endpoints de la API RESTful (Refactorizados) ---
+# --- 3. Endpoints de la API RESTful ---
 
 @app.route('/perfiles', methods=['POST'])
 def create_profile():
@@ -77,7 +78,8 @@ def create_profile():
             "numbers": True,
             "symbols": True
         },
-        historial=[]
+        historial=[],
+        edad=data.get('edad', None)  # Agregar edad si está en el JSON
     )
     
     try:
@@ -91,12 +93,31 @@ def create_profile():
         return jsonify({"error": f"Error interno del servidor: {str(e)}"}), 500
 
 @app.route('/perfiles', methods=['GET'])
-def get_all_profiles():
-    """Obtiene una lista de todos los perfiles."""
-    # Consulta todos los perfiles en la tabla
-    perfiles_objetos = Perfil.query.all()
-    # Convierte cada objeto a un diccionario
+def get_filtered_profiles():
+    """Obtiene una lista de perfiles filtrados por edad y/o nombre."""
+    # Obtener parámetros de filtrado de la URL
+    age_min = request.args.get('age_min', type=int)
+    age_max = request.args.get('age_max', type=int)
+    name = request.args.get('name', type=str)
+
+    query = Perfil.query
+
+    # Filtrar por edad mínima
+    if age_min:
+        query = query.filter(Perfil.edad >= age_min)
+
+    # Filtrar por edad máxima
+    if age_max:
+        query = query.filter(Perfil.edad <= age_max)
+
+    # Filtrar por nombre (ignora mayúsculas y minúsculas)
+    if name:
+        query = query.filter(Perfil.nombre_perfil.ilike(f'%{name}%'))
+
+    # Obtener los resultados filtrados
+    perfiles_objetos = query.all()
     perfiles_dict = [p.to_dict() for p in perfiles_objetos]
+    
     return jsonify(perfiles_dict), 200
 
 @app.route('/perfiles/<profile_id>', methods=['GET'])
@@ -129,6 +150,8 @@ def update_profile(profile_id):
         profile.email = update_data['email']
     if 'nombre_perfil' in update_data:
         profile.nombre_perfil = update_data['nombre_perfil']
+    if 'edad' in update_data:  # Permitir actualizar la edad
+        profile.edad = update_data['edad']
     
     try:
         # Guarda (confirma) los cambios en la base de datos
@@ -161,5 +184,4 @@ def delete_profile(profile_id):
 if __name__ == '__main__':
     # (Opcional) Crea la base de datos y tablas si no existen
     # al iniciar la app.
-        
     app.run(debug=True, port=5000)
