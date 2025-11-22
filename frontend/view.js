@@ -1,6 +1,118 @@
 // frontend/view.js
 import dom from './dom.js';
 
+/** 
+ * Crea una cola de mensajes con tamaño máximo.
+ * @param {number} maxSize - Tamaño máximo de la cola.
+ * @returns {object} - Objeto con métodos push, next, clear, getAll, remove.
+ */
+// APARTADO - Nueva funcionalidad: Cola de Mensajes para Action Log
+export function createMessageQueue(maxSize = 6) {
+    const queue = [];
+    return {
+        push(msg) {
+            queue.push(msg);
+            if (queue.length > maxSize) {
+                queue.shift();
+            }
+        },
+        next() {
+            return queue.shift();
+        },
+        clear() {
+            queue.length = 0;
+        },
+        getAll() {
+            return [...queue];
+        },
+        remove(id) {
+            const index = queue.findIndex(m => m.id === id);
+            if (index > -1) queue.splice(index, 1);
+        }
+    };
+}
+
+// Instancia de la cola de acciones
+const actionQueue = createMessageQueue();
+
+/**
+ * Añade un mensaje a la cola de acciones y lo renderiza.
+ * Para mensajes no-error, se auto-dismiss después de 3s.
+ * @param {string} type - 'success', 'error', 'info'.
+ * @param {string} text - Texto del mensaje.
+ */
+export function pushMessage(type, text) {
+    const id = Date.now();
+    const msg = { id, text, type, timestamp: id };
+    actionQueue.push(msg);
+    renderActionLog();
+    if (type !== 'error') {
+        setTimeout(() => {
+            actionQueue.remove(id);
+            renderActionLog();
+        }, 3000);
+    }
+}
+
+/**
+ * Renderiza la lista de acciones en el DOM.
+ */
+export function renderActionLog() {
+    if (!dom.actionLogList) return; // Si no existe aún, no renderizar
+    dom.actionLogList.innerHTML = '';
+    actionQueue.getAll().forEach(msg => {
+        const li = document.createElement('li');
+        li.textContent = `${msg.text} (${new Date(msg.timestamp).toLocaleTimeString()})`;
+        li.classList.add(`action-${msg.type}`);
+        li.style.animation = 'slideIn 0.5s ease-out';
+        dom.actionLogList.appendChild(li);
+    });
+}
+
+/**
+ * Limpia la cola de acciones y re-renderiza.
+ */
+export function clearActionLog() {
+    actionQueue.clear();
+    renderActionLog();
+}
+
+/**
+ * Ejecuta tests si la URL contiene ?runTests=1.
+ */
+function runTests() {
+    if (!window.location.search.includes('runTests=1')) return;
+    console.log('Running Action Log Tests...');
+    const q = createMessageQueue(3);
+    // Test push
+    q.push({id:1, text:'msg1', type:'info'});
+    assert(q.getAll().length === 1, 'Push one');
+    q.push({id:2, text:'msg2', type:'success'});
+    q.push({id:3, text:'msg3', type:'error'});
+    q.push({id:4, text:'msg4', type:'info'}); // Debería mantener 2,3,4
+    assert(q.getAll().length === 3, 'Max size');
+    assert(q.getAll()[0].id === 2, 'FIFO');
+    q.remove(2);
+    assert(q.getAll().length === 2, 'Remove');
+    assert(q.getAll()[0].id === 3, 'Remove correct');
+    q.clear();
+    assert(q.getAll().length === 0, 'Clear');
+    console.log('All tests passed!');
+}
+
+function assert(cond, msg) {
+    if (!cond) {
+        console.error('Test failed: ' + msg);
+        throw new Error(msg);
+    }
+}
+
+// Ejecutar tests si corresponde
+runTests();
+
+//FIN APARTADO
+
+
 /**
  * Muestra u oculta el indicador de carga.
  * @param {boolean} isLoading
@@ -33,7 +145,7 @@ export function renderProfileList(profiles) {
  */
 export function togglePanels(isEnabled) {
     const action = isEnabled ? 'remove' : 'add';
-    [dom.generatorContainer, dom.historyContainer].forEach(el => el.classList[action]('disabled-panel'));
+    [dom.generatorContainer, dom.historyContainer, dom.actionLogContainer].forEach(el => el.classList[action]('disabled-panel'));
 }
 
 /**
