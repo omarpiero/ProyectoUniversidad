@@ -67,6 +67,7 @@ async function handleCreateProfile() {
         view.renderSelectedProfile(newProfile);
         view.renderHistory(newProfile.historial);
         view.togglePanels(true);
+        view.pushMessage('success', 'Perfil creado'); // Encargado del Action Log
     } catch (error) {
         view.showFeedback(error.message, 'error');
     }
@@ -85,6 +86,7 @@ async function handleDeleteProfile() {
         currentProfile = null;
         await loadProfiles();
         view.resetUI();
+        view.pushMessage('success', 'Perfil eliminado'); // Encargado del Action Log
     } catch (error) {
         view.showFeedback(error.message, 'error');
     }
@@ -136,6 +138,7 @@ async function handlePasswordGeneration(event) {
         });
         // Si el guardado es exitoso, renderizar historial
         view.renderHistory(currentProfile.historial);
+        view.pushMessage('success', 'Contraseña generada'); // Encargado del Action Log
     } catch (error) {
         view.showFeedback(`Error al guardar: ${error.message}`, 'error');
         // Revertir cambio de estado local si falla el guardado
@@ -151,7 +154,10 @@ function copyToClipboard() {
         return view.showFeedback('No hay contraseña para copiar.', 'error');
     }
     navigator.clipboard.writeText(dom.passwordOutput.value)
-        .then(() => view.showFeedback('Copiado al portapapeles.', 'success', 1500))
+        .then(() => {
+            view.showFeedback('Copiado al portapapeles.', 'success', 1500);
+            view.pushMessage('success', 'Contraseña copiada');
+        })
         .catch(() => view.showFeedback('Error al copiar.', 'error'));
 }
 
@@ -169,6 +175,7 @@ function exportHistory() {
     link.download = `historial_${currentProfile.nombre_perfil}.txt`;
     link.click();
     URL.revokeObjectURL(link.href);
+    view.pushMessage('success', 'Historial exportado'); // Encargado del Action Log
 }
 
 /**
@@ -214,6 +221,7 @@ function initialize() {
     // Eventos de Historial
     dom.exportBtn.addEventListener('click', exportHistory);
     dom.clearHistoryBtn.addEventListener('click', clearHistory);
+    dom.clearActionLogBtn.addEventListener('click', view.clearActionLog); // Botón Clear Action Log
     
     // Eventos del Modal y Tema
     dom.closeModalBtn.addEventListener('click', view.closeModal);

@@ -48,4 +48,9 @@ export default {
     feedbackModal: document.getElementById('feedbackModal'),
     feedbackMessage: document.getElementById('feedbackMessage'),
     closeModalBtn: document.getElementById('closeModal'),
+
+    // Action Log -- Nueva funcionalidad
+    actionLogContainer: document.getElementById('action-log-container'),
+    actionLogList: document.getElementById('actionLogList'),
+    clearActionLogBtn: document.getElementById('clearActionLogBtn'),
 };
