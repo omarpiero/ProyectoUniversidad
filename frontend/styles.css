@@ -117,18 +117,79 @@ button.danger:hover { background: var(--danger-hover); }
 #historyList li { font-family: monospace; word-break: break-all; padding: 5px; border-bottom: 1px solid var(--border-color); }
 #historyList li:last-child { border-bottom: none; }
 .history-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-/* Action Log Styles - Nueva funcionalidad */
-#actionLogList { max-height: 200px; overflow-y: auto; border: 1px solid var(--border-color); border-radius: 8px; padding: 10px; margin-bottom: 15px; list-style-type: none; }
-#actionLogList li { padding: 5px; border-bottom: 1px solid var(--border-color); animation: slideIn 0.5s ease-out; }
-#actionLogList li:last-child { border-bottom: none; }
-.action-success { color: var(--strength-very-strong); }
-.action-error { color: var(--danger); }
-.action-info { color: var(--muted); }
+
+/* Action Log Styles - Funcionalidad mejorada */
+#actionLogList { 
+  max-height: 300px; 
+  overflow-y: auto; 
+  border: 1px solid var(--border-color); 
+  border-radius: 8px; 
+  padding: 10px; 
+  margin-bottom: 15px; 
+  list-style-type: none; 
+}
+
+#actionLogList li { 
+  padding: 10px; 
+  border-bottom: 1px solid var(--border-color); 
+  animation: slideIn 0.5s ease-out;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: background 0.2s ease;
+}
+
+#actionLogList li:hover {
+  background: rgba(0,0,0,0.05);
+}
+
+#actionLogList li:last-child { 
+  border-bottom: none; 
+}
+
+.action-icon {
+  font-size: 1.2em;
+  flex-shrink: 0;
+}
+
+.action-text {
+  flex-grow: 1;
+  font-weight: 500;
+}
+
+.action-time {
+  font-size: 0.85em;
+  color: var(--muted);
+  flex-shrink: 0;
+}
+
+.action-success { 
+  color: var(--strength-very-strong); 
+  border-left: 3px solid var(--strength-very-strong);
+}
+
+.action-error { 
+  color: var(--danger); 
+  border-left: 3px solid var(--danger);
+}
+
+.action-info { 
+  color: var(--muted); 
+  border-left: 3px solid var(--muted);
+}
+
+.action-empty {
+  color: var(--muted);
+  font-style: italic;
+  text-align: center;
+  border: none !important;
+}
 
 @keyframes slideIn {
   from { opacity: 0; transform: translateY(-10px); }
   to { opacity: 1; transform: translateY(0); }
-} /* Fin Action Log Styles */
+} 
+/* Fin Action Log Styles */
 
 .modal { display: none; position: fixed; z-index: 1001; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.7); justify-content: center; align-items: center; }
 .modal-content { background: var(--card-bg); color: var(--text); padding: 30px; border-radius: 10px; width: 90%; max-width: 350px; text-align: center; position: relative; border-top: 4px solid var(--primary); }

@@ -6,8 +6,8 @@ import dom from './dom.js';
  * @param {number} maxSize - Tamaño máximo de la cola.
  * @returns {object} - Objeto con métodos push, next, clear, getAll, remove.
  */
-// APARTADO - Nueva funcionalidad: Cola de Mensajes para Action Log
-export function createMessageQueue(maxSize = 6) {
+// APARTADO - Funcionalidad mejorada: Cola de Mensajes para Action Log
+export function createMessageQueue(maxSize = 50) {
     const queue = [];
     return {
         push(msg) {
@@ -37,7 +37,7 @@ const actionQueue = createMessageQueue();
 
 /**
  * Añade un mensaje a la cola de acciones y lo renderiza.
- * Para mensajes no-error, se auto-dismiss después de 3s.
+ * Los mensajes permanecen hasta que el usuario limpie el panel manualmente.
  * @param {string} type - 'success', 'error', 'info'.
  * @param {string} text - Texto del mensaje.
  */
@@ -46,12 +46,6 @@ export function pushMessage(type, text) {
     const msg = { id, text, type, timestamp: id };
     actionQueue.push(msg);
     renderActionLog();
-    if (type !== 'error') {
-        setTimeout(() => {
-            actionQueue.remove(id);
-            renderActionLog();
-        }, 3000);
-    }
 }
 
 /**
@@ -60,13 +54,43 @@ export function pushMessage(type, text) {
 export function renderActionLog() {
     if (!dom.actionLogList) return; // Si no existe aún, no renderizar
     dom.actionLogList.innerHTML = '';
-    actionQueue.getAll().forEach(msg => {
+    
+    const messages = actionQueue.getAll();
+    
+    if (messages.length === 0) {
         const li = document.createElement('li');
-        li.textContent = `${msg.text} (${new Date(msg.timestamp).toLocaleTimeString()})`;
+        li.textContent = 'No hay acciones registradas.';
+        li.classList.add('action-empty');
+        dom.actionLogList.appendChild(li);
+        return;
+    }
+    
+    messages.forEach(msg => {
+        const li = document.createElement('li');
+        
+        // Crear estructura con icono y texto
+        const icon = getIconForType(msg.type);
+        const timeStr = new Date(msg.timestamp).toLocaleTimeString();
+        
+        li.innerHTML = `<span class="action-icon">${icon}</span> <span class="action-text">${msg.text}</span> <span class="action-time">${timeStr}</span>`;
         li.classList.add(`action-${msg.type}`);
         li.style.animation = 'slideIn 0.5s ease-out';
         dom.actionLogList.appendChild(li);
     });
+}
+
+/**
+ * Obtiene el icono apropiado según el tipo de mensaje.
+ * @param {string} type - Tipo de mensaje.
+ * @returns {string} - Emoji del icono.
+ */
+function getIconForType(type) {
+    const icons = {
+        success: '✅',
+        error: '❌',
+        info: 'ℹ️'
+    };
+    return icons[type] || 'ℹ️';
 }
 
 /**
@@ -75,6 +99,7 @@ export function renderActionLog() {
 export function clearActionLog() {
     actionQueue.clear();
     renderActionLog();
+    pushMessage('info', 'Panel de acciones limpiado');
 }
 
 /**
