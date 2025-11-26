@@ -54,9 +54,18 @@
         <button type="submit" id="generateBtn">Generar Contraseña</button>
       </form>
       <div class="result">
-        <input type="text" id="passwordOutput" readonly placeholder="Genera una contraseña...">
-        <button id="copyBtn" title="Copiar">📋</button>
-      </div>
+  <input type="password" id="passwordOutput" readonly placeholder="Genera una contraseña...">
+  <button id="togglePasswordBtn" title="Mostrar/Ocultar" type="button" style="display:none">
+    <span id="eyeIcon" aria-hidden="true">
+      <!-- Ojo abierto SVG por defecto -->
+      <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <ellipse cx="12" cy="12" rx="10" ry="6"></ellipse>
+        <circle cx="12" cy="12" r="2.5"></circle>
+      </svg>
+    </span>
+  </button>
+  <button id="copyBtn" title="Copiar">📋</button>
+</div>
       <div id="strengthContainer"><div id="strengthBar"></div></div>
       <p id="strengthText">Seguridad: -</p>
       <div id="suggestionsContainer" style="display:none;">

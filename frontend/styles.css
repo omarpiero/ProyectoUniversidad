@@ -126,3 +126,61 @@ button.danger:hover { background: var(--danger-hover); }
 .profile-info strong { color: var(--primary); }
 
 hr { border: none; height: 1px; background-color: var(--border-color); margin: 20px 0; }
+
+.result {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.result input {
+  flex-grow: 1;
+}
+
+#togglePasswordBtn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--secondary);
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  transition: background 0.2s, box-shadow 0.2s;
+  margin-right: 5px;
+  font-size: 1.2rem;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(60,60,60,0.10);
+  outline: none;
+}
+#togglePasswordBtn:hover, #togglePasswordBtn:focus {
+  background: var(--secondary-hover);
+  box-shadow: 0 4px 12px rgba(40,40,40,0.18);
+}
+#eyeIcon svg {
+  display: block;
+  width: 22px;
+  height: 22px;
+}
+
+/* Mejor estilo para el botón Copiar */
+#copyBtn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--primary);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  margin-left: 5px;
+  transition: background 0.2s, box-shadow 0.2s;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(30,30,30,0.12);
+  font-size: 1.2rem;
+  outline: none;
+}
+#copyBtn:hover, #copyBtn:focus {
+  background: var(--primary-hover);
+}

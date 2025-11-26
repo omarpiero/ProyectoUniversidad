@@ -19,6 +19,8 @@ export default {
     passwordForm: document.getElementById('passwordForm'),
     passwordOutput: document.getElementById('passwordOutput'),
     copyBtn: document.getElementById('copyBtn'),
+    togglePasswordBtn: document.getElementById('togglePasswordBtn'),
+    eyeIcon: document.getElementById('eyeIcon'),
     qrBtn: document.getElementById('qrBtn'),
     qrContainer: document.getElementById('qrContainer'),
     qrCanvas: document.getElementById('qrCanvas'),

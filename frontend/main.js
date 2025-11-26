@@ -9,6 +9,35 @@ let currentProfile = null;
 
 // --- CONTROLADORES (Lógica de Eventos) ---
 
+function togglePasswordVisibility() {
+    const input = dom.passwordOutput;
+    const icon = dom.eyeIcon;
+    const openEyeSVG = `
+      <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <ellipse cx="12" cy="12" rx="10" ry="6"></ellipse>
+        <circle cx="12" cy="12" r="2.5"></circle>
+      </svg>`;
+    const closedEyeSVG = `
+      <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <ellipse cx="12" cy="12" rx="10" ry="6"></ellipse>
+        <circle cx="12" cy="12" r="2.5"></circle>
+        <line x1="3" y1="3" x2="21" y2="21"></line>
+      </svg>`;
+    if (input.type === "password") {
+        input.type = "text";
+        icon.innerHTML = closedEyeSVG;
+    } else {
+        input.type = "password";
+        icon.innerHTML = openEyeSVG;
+    }
+}
+
+function updateTogglePasswordBtnVisibility() {
+    if (!dom.togglePasswordBtn) return;
+    dom.togglePasswordBtn.style.display = dom.passwordOutput.value ? 'flex' : 'none';
+}
+
+
 /**
  * Carga la lista inicial de perfiles.
  */
@@ -125,6 +154,7 @@ async function handlePasswordGeneration(event) {
 
     // 3. "Pintar" en la Vista (View)
     dom.passwordOutput.value = password;
+    updateTogglePasswordBtnVisibility();
     view.updateStrengthMeter(strength);
     view.renderSuggestions(suggestions);
 
@@ -204,6 +234,9 @@ function initialize() {
     // Eventos del Generador
     dom.passwordForm.addEventListener('submit', handlePasswordGeneration);
     dom.copyBtn.addEventListener('click', copyToClipboard);
+    dom.togglePasswordBtn.addEventListener('click', togglePasswordVisibility);
+    dom.passwordOutput.addEventListener('input', updateTogglePasswordBtnVisibility);
+    updateTogglePasswordBtnVisibility(); // inicializa la visibilidad al cargar
     dom.qrBtn.addEventListener('click', view.generateQR);
     dom.passwordOutput.addEventListener('input', (e) => {
         const password = e.target.value;
