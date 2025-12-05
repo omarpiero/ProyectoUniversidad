@@ -1,54 +1,33 @@
-# Repositorio para proyectos de la universidad  
-## Generador de Contraseñas Seguras – Integración Backend (Passfolio)
-
-La versión más reciente del generador de contraseñas es la **v1.4**.
-
-Se agregó:
-- Modo claro/oscuro.
-- Creación de nueva funcionalidad para el proyecto.
-- Integración con backend Flask + SQLAlchemy.
-- Persistencia en base de datos SQLite.
-- Gestión de perfiles completa.
-- Exportación del historial a TXT.
-- Generador de Código QR.
-- Modularización de JavaScript.
-
----
 
 # Generador de Contraseñas (Passfolio) - Integración Backend
 
 Este proyecto integra un backend en Python con Flask a una aplicación frontend para generar contraseñas seguras, añadiendo una robusta gestión de perfiles de usuario y persistencia de datos.
 
----
+## Integrantes
 
-## 👥 Integrantes
+  - Omar Terbullino
+  - Jean Quispe
+  - Jhon Fernandez
+  - Anthony Perez
+  - Pool Caceda
+## Funcionalidad Agregada y Mejorada
 
-- Omar Terbullino  
-- Jean Quispe  
-- Jhon Fernandez  
-- Anthony Perez  
-- Pool Caceda  
+  - **Gestión de Perfiles (Backend):** Creación, selección, actualización y eliminación de perfiles de usuario (CRUD). Cada perfil almacena su propio historial y sus preferencias de generación de contraseñas.
+  - **Persistencia de Datos Profesional:** La información ya no se guarda en un archivo `perfiles.json`. Se ha migrado a una base de datos **SQLite** (`perfiles.db`). La interacción con la base de datos se gestiona a través del ORM (Object-Relational Mapper) **Flask-SQLAlchemy**, permitiendo una gestión de datos segura y eficiente.
+  - **Lógica de Frontend Modular:** El código JavaScript se ha dividido en `api.js` (comunicación con el servidor) y `main.js` (lógica de la interfaz), mejorando la organización del código.
 
----
+## Funcionalidades Restauradas
 
-## 🚀 Funcionalidad Agregada y Mejorada
+  - **Generador de Contraseña Garantizado:** El algoritmo asegura que la contraseña final contenga al menos un carácter de cada tipo seleccionado.
+  - **Exportar a TXT:** El historial de contraseñas del perfil actual se puede descargar como un archivo de texto.
+  - **Generador de Código QR:** Se puede generar un QR a partir de la contraseña creada.
+  - **Mejora de UX:** Feedback visual para todas las operaciones (carga, éxito, error) y paneles deshabilitados hasta que se carga un perfil.
 
-- **Gestión de Perfiles (Backend):** CRUD completo de perfiles con historial propio.  
-- **Persistencia Profesional:** Se migró de `perfiles.json` a **SQLite** (`perfiles.db`) usando **Flask-SQLAlchemy**.  
-- **Frontend Modular:**  
-  - `api.js` → comunicación backend  
-  - `main.js` → lógica principal  
-  - `utils.js`, `dom.js`, `view.js` → Organización clara y desacoplada  
-- **Generador Garantizado:** Al menos un carácter de cada tipo seleccionado en la contraseña.  
-- **Exportar Historial a TXT**  
-- **Generador de Código QR**  
-- **Mejor UX:** Indicadores visuales, estados de carga, errores y paneles deshabilitados.
+## Estructura de Carpetas
 
----
+La estructura de carpetas ahora refleja la nueva persistencia de datos:
 
-## 📁 Estructura de Carpetas
-
-
+```
 .
 ├── backend/
 │   ├── app.py              # Servidor Flask con la API RESTful y lógica de SQLAlchemy
@@ -65,6 +44,7 @@ Este proyecto integra un backend en Python con Flask a una aplicación frontend 
 │   └── main.js             # Punto de entrada principal (arranque y delegación de eventos)
 │
 └── README.md               # Este archivo
+```
 
 ## Cómo Instalar y Ejecutar
 
@@ -168,4 +148,3 @@ Todos los comandos de prueba siguen funcionando exactamente igual, demostrando l
     ```bash
     curl -X DELETE http://127.0.0.1:5000/perfiles/{ID_DEL_USUARIO}
     ```
->>>>>>> rama_PerezAlexis
