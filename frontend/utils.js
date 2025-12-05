@@ -85,19 +85,3 @@ export function getSuggestions(password) {
     
     return suggestions;
 }
-
-/**
- * Estima el tiempo de hackeo basado en la etiqueta de fortaleza.
- * @param {string} strengthLabel - La etiqueta (ej. "Muy Débil").
- * @returns {string} - Texto estimado (ej. "Instantáneo").
- */
-export function estimateCrackTime(strengthLabel) {
-    const times = {
-        "Muy Débil": "Instantáneo",
-        "Débil": "Unos minutos",
-        "Aceptable": "Días",
-        "Fuerte": "Años",
-        "Muy Fuerte": "Siglos"
-    };
-    return times[strengthLabel] || "";
-}

@@ -250,19 +250,17 @@ export function closeModal() {
  * Actualiza la barra de fortaleza en la UI.
  * @param {object} strength - El objeto de fortaleza de utils.calculateStrength.
  */
-export function updateStrengthMeter(strength, timeEstimate = "") {
+export function updateStrengthMeter(strength) {
     if (!strength) {
         dom.strengthBar.style.width = '0%';
-        dom.strengthText.innerHTML = 'Seguridad: -'; // Limpiar
+        dom.strengthText.textContent = 'Seguridad: -';
         return;
     }
     dom.strengthBar.style.width = `${strength.widthPercent}%`;
     dom.strengthBar.style.background = getComputedStyle(document.documentElement).getPropertyValue(strength.color).trim();
-    
-    // ACTUALIZADO: Incluye el tiempo estimado si existe
-    const timeText = timeEstimate ? ` <span style="opacity: 0.8; font-size: 0.9em;">(Tiempo: ${timeEstimate})</span>` : '';
-    dom.strengthText.innerHTML = `Seguridad: ${strength.label}${timeText}`;
+    dom.strengthText.textContent = `Seguridad: ${strength.label}`;
 }
+
 /**
  * "Pinta" las sugerencias en la UI.
  * @param {Array} suggestions - Un array de strings de sugerencias.
@@ -320,26 +318,4 @@ export function initTheme() {
     setTheme(isLight);
     dom.themeToggle.checked = isLight;
     dom.themeToggle.addEventListener('change', (e) => setTheme(e.target.checked));
-}
-/**
- * Alterna la visibilidad del campo de contraseña.
- */
-export function togglePasswordVisibility() {
-    const currentType = dom.passwordOutput.type;
-    const isHidden = currentType === 'password';
-    
-    // 1. Alternar input principal
-    dom.passwordOutput.type = isHidden ? 'text' : 'password';
-    
-    // 2. Alternar icono del botón
-    dom.toggleVisibilityBtn.textContent = isHidden ? '🔒' : '👁️';
-
-    // 3. [NUEVO] Alternar borrosidad en el historial
-    // Si estaba oculto (password) y pasamos a text, quitamos el blur.
-    // Si estaba visible (text) y pasamos a password, ponemos el blur.
-    if (isHidden) {
-        dom.historyList.classList.remove('blur-content');
-    } else {
-        dom.historyList.classList.add('blur-content');
-    }
 }

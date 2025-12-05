@@ -199,15 +199,3 @@ button.danger:hover { background: var(--danger-hover); }
 .profile-info strong { color: var(--primary); }
 
 hr { border: none; height: 1px; background-color: var(--border-color); margin: 20px 0; }
-
-/* Clase para censurar contenido sensible */
-.blur-content li {
-    filter: blur(5px);
-    user-select: none; /* Evita que se seleccione el texto borroso */
-    transition: filter 0.3s ease;
-}
-
-/* Opcional: Mostrar al pasar el mouse por encima */
-.blur-content li:hover {
-    filter: blur(0);
-}
