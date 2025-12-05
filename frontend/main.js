@@ -4,6 +4,8 @@ import dom from './dom.js';
 import * as view from './view.js';
 import * as utils from './utils.js';
 
+
+
 // --- ESTADO DE LA APLICACIÓN ---
 let currentProfile = null;
 
@@ -214,10 +216,23 @@ function initialize() {
     dom.qrBtn.addEventListener('click', view.generateQR);
     dom.passwordOutput.addEventListener('input', (e) => {
         const password = e.target.value;
-        view.updateStrengthMeter(utils.calculateStrength(password));
+        
+        // 1. Calcular fortaleza
+        const strength = utils.calculateStrength(password);
+        
+        // 2. NUEVO: Estimar tiempo (usando la etiqueta de fortaleza)
+        const time = utils.estimateCrackTime(strength.label);
+        
+        // 3. ACTUALIZADO: Pasar ambos datos a la vista
+        view.updateStrengthMeter(strength, time);
+        
         view.renderSuggestions(utils.getSuggestions(password));
     });
 
+    // Evento de Visibilidad
+    if(dom.toggleVisibilityBtn) {
+        dom.toggleVisibilityBtn.addEventListener('click', view.togglePasswordVisibility);
+    }
     // Eventos de Historial
     dom.exportBtn.addEventListener('click', exportHistory);
     dom.clearHistoryBtn.addEventListener('click', clearHistory);
