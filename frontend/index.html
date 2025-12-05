@@ -53,12 +53,13 @@
         </div>
         <button type="submit" id="generateBtn">Generar Contraseña</button>
       </form>
-      <div class="result">
-        <input type="text" id="passwordOutput" readonly placeholder="Genera una contraseña...">
+     <div class="result">
+      <input type="password" id="passwordOutput" placeholder="Genera una contraseña...">
+        <button id="toggleVisibilityBtn" class="secondary" title="Mostrar/Ocultar" style="padding: 12px;">👁️</button>
         <button id="copyBtn" title="Copiar">📋</button>
       </div>
       <div id="strengthContainer"><div id="strengthBar"></div></div>
-      <p id="strengthText">Seguridad: -</p>
+      <p id="strengthText">Seguridad: - <span id="crackTime" style="margin-left: 10px; font-style: italic; color: var(--muted); font-size: 0.9em;"></span></p>
       <div id="suggestionsContainer" style="display:none;">
         <h3>Sugerencias:</h3>
         <ul id="suggestionsList"></ul>
@@ -76,6 +77,13 @@
           <button id="exportBtn" class="secondary">⬇️ Exportar a TXT</button>
           <button id="clearHistoryBtn" class="danger">♻️ Limpiar Historial</button>
       </div>
+    </div>
+
+    <!-- 🔹 CONTAINER 3: Action Log -->
+    <div class="container disabled-panel" id="action-log-container">
+      <h2>📋 Panel de Acciones</h2>
+      <ul id="actionLogList"></ul>
+      <button id="clearActionLogBtn" class="secondary">🧹 Limpiar Panel</button>
     </div>
   </div>
 

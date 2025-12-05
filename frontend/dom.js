@@ -18,6 +18,9 @@ export default {
     generatorContainer: document.getElementById('generator-container'),
     passwordForm: document.getElementById('passwordForm'),
     passwordOutput: document.getElementById('passwordOutput'),
+    // NUEVOS SELECTORES:
+    toggleVisibilityBtn: document.getElementById('toggleVisibilityBtn'),
+    crackTimeDisplay: document.getElementById('crackTime'), // Para el tiempo de descifrado 
     copyBtn: document.getElementById('copyBtn'),
     qrBtn: document.getElementById('qrBtn'),
     qrContainer: document.getElementById('qrContainer'),
@@ -48,4 +51,9 @@ export default {
     feedbackModal: document.getElementById('feedbackModal'),
     feedbackMessage: document.getElementById('feedbackMessage'),
     closeModalBtn: document.getElementById('closeModal'),
+
+    // Action Log -- Nueva funcionalidad
+    actionLogContainer: document.getElementById('action-log-container'),
+    actionLogList: document.getElementById('actionLogList'),
+    clearActionLogBtn: document.getElementById('clearActionLogBtn'),
 };
